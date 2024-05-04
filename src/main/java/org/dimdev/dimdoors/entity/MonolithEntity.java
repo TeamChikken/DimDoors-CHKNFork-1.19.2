@@ -46,7 +46,6 @@ public class MonolithEntity extends MobEntity {
     private static final TrackedData<Float> SCALE = DataTracker.registerData(MonolithEntity.class, TrackedDataHandlerRegistry.FLOAT);
 	private static final TrackedData<Float> PITCH = DataTracker.registerData(MonolithEntity.class, TrackedDataHandlerRegistry.FLOAT);
     private static final float EYE_HEIGHT_PERCENTAGE = 0.55f;
-    @Environment(EnvType.CLIENT)
     private static final Random clientRandom = Random.create();
 
     private int soundTime = 0;
