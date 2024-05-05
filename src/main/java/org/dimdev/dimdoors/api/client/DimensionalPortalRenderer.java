@@ -15,7 +15,6 @@ import java.util.Collections;
 @Environment(EnvType.CLIENT)
 public final class DimensionalPortalRenderer {
 	public static final Identifier WARP_PATH;
-	private static final RenderPhase.Shader DIMENSIONAL_PORTAL_SHADER;
 	private static final RenderLayer RENDER_LAYER;
 	private static final ModelPart MODEL;
 	private static final ModelPart TALL_MODEL;
@@ -35,28 +34,11 @@ public final class DimensionalPortalRenderer {
 	}
 
 	static {
-		WARP_PATH = Util.id("textures/other/warp.png");
-		DIMENSIONAL_PORTAL_SHADER = new RenderPhase.Shader(ModShaders::getDimensionalPortal);
-		RENDER_LAYER = RenderLayerFactory.create(
-				"dimensional_portal",
-				VertexFormats.POSITION,
-				VertexFormat.DrawMode.QUADS,
-				256,
-				false,
-				false,
-				RenderLayer.MultiPhaseParameters.builder()
-						.shader(DIMENSIONAL_PORTAL_SHADER)
-						.texture(
-								RenderPhase.Textures.create()
-										.add(EndPortalBlockEntityRenderer.SKY_TEXTURE, false, false)
-										.add(WARP_PATH, false, false)
-										.build()
-						)
-						.build(false)
-		);
-		ModelPart.Cuboid small = new ModelPart.Cuboid(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 15.8f, 0.01F, 0, 0, 0, false, 1024, 1024);
-		MODEL = new ModelPart(Collections.singletonList(small), Collections.emptyMap());
-		ModelPart.Cuboid big = new ModelPart.Cuboid(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 31.8f, 0.01F, 0, 0, 0, false, 1024, 1024);
-		TALL_MODEL = new ModelPart(Collections.singletonList(big), Collections.emptyMap());
-	}
+        WARP_PATH = Util.id("textures/other/warp.png");
+        RENDER_LAYER = RenderLayer.getEntitySolid(WARP_PATH);
+        ModelPart.Cuboid small = new ModelPart.Cuboid(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 15.8f, 0.01F, 0, 0, 0, false, 1024, 1024);
+        MODEL = new ModelPart(Collections.singletonList(small), Collections.emptyMap());
+        ModelPart.Cuboid big = new ModelPart.Cuboid(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 31.8f, 0.01F, 0, 0, 0, false, 1024, 1024);
+        TALL_MODEL = new ModelPart(Collections.singletonList(big), Collections.emptyMap());
+    }
 }
