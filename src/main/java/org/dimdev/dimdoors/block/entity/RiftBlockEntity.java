@@ -219,6 +219,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 	}
 
 	public void updateColor() {
+		if (this != null) {
 		if (this.data.isForcedColor()) return;
 		if (!this.isRegistered()) {
 			this.data.setColor(new RGBA(0, 0, 0, 1));
@@ -232,6 +233,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 				this.markDirty();
 			}
 		}
+	  }
 	}
 
 	public abstract boolean isDetached();
