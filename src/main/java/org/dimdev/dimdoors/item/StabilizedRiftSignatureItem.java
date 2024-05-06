@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.item;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
@@ -73,15 +74,22 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
 				}
 				World targetWorld = DimensionalDoorsInitializer.getWorld(target.world);
 				targetWorld.setBlockState(target.getBlockPos(), ModBlocks.DETACHED_RIFT.getDefaultState());
-				DetachedRiftBlockEntity rift1 = (DetachedRiftBlockEntity) target.getBlockEntity();
-				rift1.register();
+
+				BlockEntity be = target.getBlockEntity();
+
+				if (be instanceof DetachedRiftBlockEntity rift) {
+					rift.register();
+				}
 			}
 
 			// Place a rift at the source point
 			world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
-			DetachedRiftBlockEntity rift2 = (DetachedRiftBlockEntity) world.getBlockEntity(pos);
-			rift2.setDestination(RiftReference.tryMakeRelative(new Location((ServerWorld) world, pos), target));
-			rift2.register();
+			BlockEntity be = world.getBlockEntity(pos);
+
+			if (be instanceof DetachedRiftBlockEntity rift) {
+				rift.setDestination(RiftReference.tryMakeRelative(new Location((ServerWorld) world, pos), target));
+				rift.register();
+			}
 
 			stack.damage(1, player, playerEntity -> {
 			});

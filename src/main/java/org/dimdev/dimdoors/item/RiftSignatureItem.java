@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.item;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -89,16 +90,22 @@ public class RiftSignatureItem extends Item {
 				}
 				World sourceWorld = DimensionalDoorsInitializer.getWorld(target.world);
 				sourceWorld.setBlockState(target.getBlockPos(), ModBlocks.DETACHED_RIFT.getDefaultState());
-				DetachedRiftBlockEntity rift1 = (DetachedRiftBlockEntity) target.getBlockEntity();
-				rift1.setDestination(RiftReference.tryMakeRelative(target, new Location((ServerWorld) world, pos)));
-				rift1.register();
+				BlockEntity be = target.getBlockEntity();
+
+				if (be instanceof DetachedRiftBlockEntity rift) {
+					rift.setDestination(RiftReference.tryMakeRelative(target, new Location((ServerWorld) world, pos)));
+					rift.register();
+				}
 			}
 
 			// Place a rift at the target point
 			world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
-			DetachedRiftBlockEntity rift2 = (DetachedRiftBlockEntity) world.getBlockEntity(pos);
-			rift2.setDestination(RiftReference.tryMakeRelative(new Location((ServerWorld) world, pos), target));
-			rift2.register();
+
+			BlockEntity be = world.getBlockEntity(pos);
+			if (be instanceof DetachedRiftBlockEntity rift) {
+				rift.setDestination(RiftReference.tryMakeRelative(new Location((ServerWorld) world, pos), target));
+				rift.register();
+			}
 
 			stack.damage(1, player, a -> {
 			}); // TODO: calculate damage based on position?

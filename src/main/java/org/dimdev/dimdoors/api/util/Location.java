@@ -13,6 +13,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.jetbrains.annotations.Nullable;
 
 public class Location {
 	public static final Codec<Location> CODEC = RecordCodecBuilder.create(instance -> {
@@ -59,7 +60,7 @@ public class Location {
 		return this.getWorld().getFluidState(this.pos);
 	}
 
-	public BlockEntity getBlockEntity() {
+	public @Nullable BlockEntity getBlockEntity() {
 		return this.getWorld().getBlockEntity(this.pos);
 	}
 
@@ -70,8 +71,8 @@ public class Location {
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof Location &&
-				((Location) obj).world.equals(this.world) &&
-				((Location) obj).pos.equals(this.pos);
+			((Location) obj).world.equals(this.world) &&
+			((Location) obj).pos.equals(this.pos);
 	}
 
 	@Override
@@ -97,8 +98,8 @@ public class Location {
 	public static Location fromNbt(NbtCompound nbt) {
 		int[] pos = nbt.getIntArray("pos");
 		return new Location(
-				RegistryKey.of(Registry.WORLD_KEY, new Identifier(nbt.getString("world"))),
-				new BlockPos(pos[0], pos[1], pos[2])
+			RegistryKey.of(Registry.WORLD_KEY, new Identifier(nbt.getString("world"))),
+			new BlockPos(pos[0], pos[1], pos[2])
 		);
 	}
 }

@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.rift.registry;
 
 import java.util.UUID;
+
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,29 +40,51 @@ public class Rift extends RegistryVertex {
 	@Override
 	public void sourceGone(RegistryVertex source) {
 		super.sourceGone(source);
-		RiftBlockEntity riftTileEntity = (RiftBlockEntity) this.location.getBlockEntity();
-		if (source instanceof Rift) {
-			riftTileEntity.handleSourceGone(((Rift) source).location);
+
+		BlockEntity blockEntity = this.location.getBlockEntity();
+
+		if (!(source instanceof Rift) || !(blockEntity instanceof RiftBlockEntity riftBlockEntity)) {
+			return;
 		}
+
+		riftBlockEntity.handleSourceGone(((Rift) source).location);
 	}
 
 	@Override
 	public void targetGone(RegistryVertex target) {
 		super.targetGone(target);
-		RiftBlockEntity riftTileEntity = (RiftBlockEntity) this.location.getBlockEntity();
-		if (target instanceof Rift) {
-			riftTileEntity.handleTargetGone(((Rift) target).location);
+		BlockEntity blockEntity = this.location.getBlockEntity();
+
+		if (!(blockEntity instanceof RiftBlockEntity riftBlockEntity)) {
+			return;
 		}
-		riftTileEntity.updateColor();
+
+		if (target instanceof Rift) {
+			riftBlockEntity.handleTargetGone(((Rift) target).location);
+		}
+
+		riftBlockEntity.updateColor();
 	}
 
 	public void targetChanged(RegistryVertex target) {
-		LOGGER.debug("Rift " + this + " notified of target " + target + " having changed. Updating color.");
-		((RiftBlockEntity) this.location.getBlockEntity()).updateColor();
+		LOGGER.debug("Rift {} notified of target {} having changed. Updating color.", this, target);
+
+		BlockEntity blockEntity = this.location.getBlockEntity();
+
+		if (!(blockEntity instanceof RiftBlockEntity riftBlockEntity)) {
+			return;
+		}
+
+		riftBlockEntity.updateColor();
 	}
 
 	public void markDirty() {
-		((RiftBlockEntity) this.location.getBlockEntity()).updateColor();
+		BlockEntity blockEntity = this.location.getBlockEntity();
+
+		if (blockEntity instanceof RiftBlockEntity riftBlockEntity) {
+			riftBlockEntity.updateColor();
+		}
+
 		for (Location location : DimensionalRegistry.getRiftRegistry().getSources(this.location)) {
 			DimensionalRegistry.getRiftRegistry().getRift(location).targetChanged(this);
 		}
