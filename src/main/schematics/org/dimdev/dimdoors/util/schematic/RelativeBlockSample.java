@@ -165,8 +165,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				}
 				if(section.getBlockState(x, y, z).isAir()) {
 					BlockState newState = this.blockContainer.get(blockPos.subtract(origin));
-					// FIXME: newState can be null in some circumstances
-					if (!newState.isAir()) {
+					if ((newState != null) && (!newState.isAir())) {
 						section.setBlockState(x, y, z, newState, false);
 						if (placementType.shouldMarkForUpdate()) serverChunkManager.markForUpdate(blockPos);
 					}
@@ -176,7 +175,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 			BlockPos.stream(intersection).forEach(blockPos -> { // FIXME: currently extremely unstable since it can try to get neighbouring chunks which can cause a deadlock
 				if(chunk.getBlockState(blockPos).isAir()) {
 					BlockState newState = this.blockContainer.get(blockPos.subtract(origin));
-					if (!newState.isAir()) {
+					if ((newState != null) && (!newState.isAir())) {
 						chunk.setBlockState(blockPos, newState, false);
 					}
 				}

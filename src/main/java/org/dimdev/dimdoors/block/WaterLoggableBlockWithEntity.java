@@ -72,7 +72,7 @@ public abstract class WaterLoggableBlockWithEntity extends BlockWithEntity imple
 		}
 
 		BlockState newState = super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
-		if (newState.isAir() && state.getFluidState().getFluid() == Fluids.WATER) return Blocks.WATER.getDefaultState();
+		if ((newState != null) && (newState.isAir() && state.getFluidState().getFluid() == Fluids.WATER)) return Blocks.WATER.getDefaultState();
 		return newState;
 	}
 
