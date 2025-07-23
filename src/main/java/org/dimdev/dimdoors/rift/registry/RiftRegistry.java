@@ -151,13 +151,22 @@ public class RiftRegistry {
 			entryNBT.putUuid("player", entry.getKey());
 
 			Set<DefaultEdge> edges = this.graph.outgoingEdgesOf(entry.getValue());
+
 			if (edges.size() != 1) {
-				LOGGER.error("PlayerRiftPointer {} has {} outgoing edges, expected 1. Picking the first arbitrarily.", entry.getKey(), edges.size());
+				LOGGER.warn("PlayerRiftPointer {} has {} outgoing edges, expected 1. Picking the last added one arbitrarily.", entry.getKey(), edges.size());
 			}
 
 			if (!edges.isEmpty()) {
-				entryNBT.putUuid("rift", this.graph.getEdgeTarget(edges.iterator().next()).id);
-				pointers.add(entryNBT);
+				// Choose the last edge (more likely to be the latest valid connection)
+				DefaultEdge lastEdge = null;
+				for (DefaultEdge edge : edges) {
+					lastEdge = edge;
+				}
+				if (lastEdge != null) {
+					RegistryVertex rift = this.graph.getEdgeTarget(lastEdge);
+					entryNBT.putUuid("rift", rift.id);
+					pointers.add(entryNBT);
+				}
 			}
 		}
 		return pointers;
