@@ -213,6 +213,18 @@ public class RiftRegistry {
 
 		Rift rift = this.getRift(location);
 
+		for (Map<UUID, PlayerRiftPointer> map : List.of(lastPrivatePocketEntrances, lastPrivatePocketExits, overworldRifts)) {
+			for (PlayerRiftPointer pointer : map.values()) {
+				Set<DefaultEdge> toRemove = new HashSet<>();
+				for (DefaultEdge edge : graph.outgoingEdgesOf(pointer)) {
+					if (graph.getEdgeTarget(edge).equals(rift)) {
+						toRemove.add(edge);
+					}
+				}
+				toRemove.forEach(edge -> graph.removeEdge(edge));
+			}
+		}
+
 		Set<DefaultEdge> incomingEdges = this.graph.incomingEdgesOf(rift);
 		Set<DefaultEdge> outgoingEdges = this.graph.outgoingEdgesOf(rift);
 
