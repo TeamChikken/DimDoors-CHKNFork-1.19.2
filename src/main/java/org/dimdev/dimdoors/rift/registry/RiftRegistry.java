@@ -149,13 +149,16 @@ public class RiftRegistry {
 		for (Map.Entry<UUID, PlayerRiftPointer> entry : playerRiftPointerMap.entrySet()) {
 			NbtCompound entryNBT = new NbtCompound();
 			entryNBT.putUuid("player", entry.getKey());
-			int count = 0;
-			for (DefaultEdge edge : this.graph.outgoingEdgesOf(entry.getValue())) {
-				entryNBT.putUuid("rift", this.graph.getEdgeTarget(edge).id);
-				count++;
+
+			Set<DefaultEdge> edges = this.graph.outgoingEdgesOf(entry.getValue());
+			if (edges.size() != 1) {
+				LOGGER.error("PlayerRiftPointer {} has {} outgoing edges, expected 1. Picking the first arbitrarily.", entry.getKey(), edges.size());
 			}
-			if (count != 1) throw new RuntimeException("PlayerRiftPointer points to more than one rift");
-			pointers.add(entryNBT);
+
+			if (!edges.isEmpty()) {
+				entryNBT.putUuid("rift", this.graph.getEdgeTarget(edges.iterator().next()).id);
+				pointers.add(entryNBT);
+			}
 		}
 		return pointers;
 	}
